@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
 
-  "name": "All tabs parser",
-  "description": "This extension will export all current tab url",
-  "version": "1.0",
+  "name": "ALT-TAB-Parser",
+  "description": "This extension will save all current tab url into localstorage then open it later as you wish !",
+  "version": "1.1",
 
   "browser_action": {
    "default_icon": "icon.png",
