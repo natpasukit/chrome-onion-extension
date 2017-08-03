@@ -1,6 +1,6 @@
 // Get URL from tab function
-function gettab(){
-  url = [];
+function gettab(user,callback){
+  var url = new Array();
   chrome.windows.getAll({populate:true},function(windows){
     windows.forEach(function(window){
       window.tabs.forEach(function(tab){
@@ -8,41 +8,33 @@ function gettab(){
         url.push( {
           "url":tab.url
           ,"title":tab.title
-        } );
+        });
       });
     });
   });
-  return(url);
+  url = {firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"};
+  //console.log(url);
+  callback(url);
 }
+
+// FIX ARRAY TO OBJECT ! TO MAKE THIS WORK KWRKKRK
 
 // Add onClick listener to checkTab button
 document.addEventListener('DOMContentLoaded',function(){
   var checkPageButton = document.getElementById('checkTab');
   checkPageButton.addEventListener('click',function(){
     //Get all open tab to console.log
-    console.log(gettab());
-    // Using indexedDB
-    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
-    // Check support for indexedDB
-    if (!window.indexedDB) {
-       window.alert("Your browser doesn't support a stable version of IndexedDB.")
+    if (typeof(Storage) !== "undefined") {
+      console.log('localstorage online');
+      // Get url & save to localstorage
+      gettab('user1',function(urlArray){
+        localStorage.setItem('user1',JSON.stringify(urlArray));
+      });
+    }else{
+      console.log('Your browser does not support localstorage');
     }
-    var db;
-    var request = indexedDB.open("TAB Log");
-    request.onerror = function(event) {
-      alert("Please allow IndexedDB!");
-    };
-    request.onsuccess = function(event) {
-      db = event.target.result;
-    };
+    // Retrieve the object from storage
+    var retrievedObject = localStorage.getItem('user1');
+    console.log('retrievedObject: ', JSON.parse(retrievedObject));
   });
 });
-
-// Global error handle for indexedDB
-// db.onerror = function(event) {
-//   // Generic error handler for all errors targeted at this database's
-//   // requests!
-//   alert("Database error: " + event.target.errorCode);
-// };
