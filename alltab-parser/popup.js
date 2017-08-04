@@ -45,4 +45,14 @@ document.addEventListener('DOMContentLoaded',function(){
       chrome.tabs.create({ url: current_url.url });
     });
   });
+
+  var closePageButton = document.getElementById('closeTab');
+  closePageButton.addEventListener('click',function(){
+    chrome.tabs.query({}, function (tabs) {
+      for (var i = 0; i < tabs.length; i++) {
+        chrome.tabs.remove(tabs[i].id);
+      }
+    });
+    chrome.tabs.create({  });
+  });
 });
