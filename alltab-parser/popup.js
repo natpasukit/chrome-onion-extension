@@ -65,21 +65,30 @@ document.addEventListener('DOMContentLoaded',function(){
         // Remove old Data
         localStorage.removeItem('HistoryLog');
       }
+      console.log(history);
       var historyjson = JSON.stringify(history);
       localStorage.setItem('HistoryLog',historyjson);
     });
   });
 
-//   var loadHistoryButton = document.getElementById('loadHistory');
-//   loadHistoryButton.addEventListener('click',function(){
-//     // Get local data
-//     var historyObject = JSON.parse(localStorage.getItem('HistoryLog'));
-//     console.log(historyObject);
-//     historyObject.forEach(function(historydata){
-//       // console.log(historydata.url);
-//       chrome.history.addUrl({url: historydata.url},function(){
-//
-//       });
-//     });
-//   });
-// });
+  var loadHistoryButton = document.getElementById('loadHistory');
+  loadHistoryButton.addEventListener('click',function(){
+    // Get local data
+    var historyObject = JSON.parse(localStorage.getItem('HistoryLog'));
+    console.log(historyObject);
+    historyObject.forEach(function(historydata){
+      // console.log(historydata.url);
+      chrome.history.addUrl({url: historydata.url},function(){
+        console.log(historydata.url);
+      });
+    });
+  });
+
+  var clearHistoryButton = document.getElementById('clearHistory');
+  clearHistoryButton.addEventListener('click',function(){
+    // Clear local history data
+    chrome.history.deleteAll(function(){
+      console.log('delete history');
+    });
+  });
+});
