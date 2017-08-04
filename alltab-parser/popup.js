@@ -53,6 +53,33 @@ document.addEventListener('DOMContentLoaded',function(){
         chrome.tabs.remove(tabs[i].id);
       }
     });
-    chrome.tabs.create({  });
+    chrome.tabs.create({});
   });
-});
+
+  var saveHistoryButton = document.getElementById('saveHistory');
+  saveHistoryButton.addEventListener('click',function(){
+    // Load history data
+    chrome.history.search({text:'', maxResults: 1000},function(history){
+      // If localstorage key exist clear else set it
+      if (localStorage.getItem("HistoryLog") === null) {
+        // Remove old Data
+        localStorage.removeItem('HistoryLog');
+      }
+      var historyjson = JSON.stringify(history);
+      localStorage.setItem('HistoryLog',historyjson);
+    });
+  });
+
+//   var loadHistoryButton = document.getElementById('loadHistory');
+//   loadHistoryButton.addEventListener('click',function(){
+//     // Get local data
+//     var historyObject = JSON.parse(localStorage.getItem('HistoryLog'));
+//     console.log(historyObject);
+//     historyObject.forEach(function(historydata){
+//       // console.log(historydata.url);
+//       chrome.history.addUrl({url: historydata.url},function(){
+//
+//       });
+//     });
+//   });
+// });
