@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded',function(){
               console.log('No existing data, Saving tab...');
             }else{
               // Remove data on user prompt
-              if(confirm("Old tab data exist do you wish to overwrite it ?") == true){
+              if(confirm("Old tab data exist in storage do you wish to overwrite it ?") == true){
                 console.log('Old data existing, Clearing and saveing new data');
                 localStorage.removeItem('TabLog');
                 localStorage.setItem('TabLog',JSONurl);
@@ -92,33 +92,51 @@ document.addEventListener('DOMContentLoaded',function(){
     chrome.history.search({text:'', maxResults: 1000},function(history){
       // If localstorage key exist clear else set it
       if (localStorage.getItem("HistoryLog") === null) {
-        // Remove old Data
-        localStorage.removeItem('HistoryLog');
+        var historyjson = JSON.stringify(history);
+        localStorage.setItem('HistoryLog',historyjson);
+      }else{
+        if(confirm("Overwrite existing history data in storage ?") == true){
+          // Remove old Data
+          localStorage.removeItem('HistoryLog');
+          var historyjson = JSON.stringify(history);
+          localStorage.setItem('HistoryLog',historyjson);
+        }else{
+          console.log('User cancel Overwrite');
+        }
       }
       console.log(history);
-      var historyjson = JSON.stringify(history);
-      localStorage.setItem('HistoryLog',historyjson);
     });
   });
 
   var loadHistoryButton = document.getElementById('loadHistory');
   loadHistoryButton.addEventListener('click',function(){
-    // Get local data
-    var historyObject = JSON.parse(localStorage.getItem('HistoryLog'));
-    console.log(historyObject);
-    historyObject.forEach(function(historydata){
-      // console.log(historydata.url);
-      chrome.history.addUrl({url: historydata.url},function(){
-        console.log(historydata.url);
-      });
-    });
+    // Check history data exist.
+    if(localStorage.getItem("HistoryLog") === null){
+      alert('There is no history saved in storage');
+    }else{
+      // Get local data
+      var historyObject = JSON.parse(localStorage.getItem('HistoryLog'));
+      console.log(historyObject);
+      if(confirm("Do you want to import history from storage in to chrome ?") == true){
+        historyObject.forEach(function(historydata){
+          // console.log(historydata.url);
+          chrome.history.addUrl({url: historydata.url},function(){
+            console.log(historydata.url);
+          });
+        });
+      }else{
+        console.log('Load history cancel by user.')
+      }
+    }
   });
 
   var clearHistoryButton = document.getElementById('clearHistory');
   clearHistoryButton.addEventListener('click',function(){
-    // Clear local history data
-    chrome.history.deleteAll(function(){
-      console.log('delete history');
-    });
+    if(confirm("Do you want to clear your history ?") == true){
+      // Clear local history data
+      chrome.history.deleteAll(function(){
+        console.log('delete history');
+      });
+    }
   });
 });

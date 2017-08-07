@@ -3,7 +3,7 @@
 
   "name": "ALT-TAB-Parser",
   "description": "This extension will save all current tab url into localstorage then open it later as you wish !",
-  "version": "1.3",
+  "version": "1.4",
 
   "browser_action": {
    "default_icon": "icon.png",
