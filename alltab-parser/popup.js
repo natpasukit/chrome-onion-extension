@@ -1,5 +1,12 @@
 // Add onClick listener to checkTab button
 document.addEventListener('DOMContentLoaded',function(){
+  // Localstorage check
+  if (typeof(Storage) !== "undefined"){
+    console.log('Extension localstorage loaded');
+  }else{
+    alert('Browser do not support localstorage, Please update your browser.');
+  }
+
   var checkPageButton = document.getElementById('checkTab');
   checkPageButton.addEventListener('click',function(){
     //Get all open tab to console.log
@@ -25,10 +32,16 @@ document.addEventListener('DOMContentLoaded',function(){
             if (localStorage.getItem("TabLog") === null) {
               // If not set , set it.
               localStorage.setItem('TabLog',JSONurl);
+              console.log('No existing data, Saving tab...');
             }else{
-              // Else remove old Data
-              localStorage.removeItem('TabLog');
-              localStorage.setItem('TabLog',JSONurl);
+              // Remove data on user prompt
+              if(confirm("Old tab data exist do you wish to overwrite it ?") == true){
+                console.log('Old data existing, Clearing and saveing new data');
+                localStorage.removeItem('TabLog');
+                localStorage.setItem('TabLog',JSONurl);
+              }else{
+                console.log('User cancel data overwrite');
+              }
             }
             // Check return value
             var retrievedObject = localStorage.getItem('TabLog');
@@ -54,9 +67,9 @@ document.addEventListener('DOMContentLoaded',function(){
       });
     }else{
       if(typeof(Storage) !== "undefined"){
-        alert('Browser does not support localstorage');
-      }else{
         alert('No tab saved');
+      }else{
+        alert('Browser does not support localstorage');
       }
     }
   });
