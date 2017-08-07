@@ -18,14 +18,19 @@ document.addEventListener('DOMContentLoaded',function(){
           });
         });
       });
+      // Google api is async
         setTimeout(function(){
             var JSONurl = JSON.stringify(url);
             // If localstorage key exist clear else set it
             if (localStorage.getItem("TabLog") === null) {
-              // Remove old Data
+              // If not set , set it.
+              localStorage.setItem('TabLog',JSONurl);
+            }else{
+              // Else remove old Data
               localStorage.removeItem('TabLog');
+              localStorage.setItem('TabLog',JSONurl);
             }
-            localStorage.setItem('TabLog',JSONurl);
+            // Check return value
             var retrievedObject = localStorage.getItem('TabLog');
             console.log('retrievedObject: ', JSON.parse(retrievedObject));
         }, 1000);
@@ -37,19 +42,31 @@ document.addEventListener('DOMContentLoaded',function(){
 
   var loadPageButton = document.getElementById('loadTab');
   loadPageButton.addEventListener('click',function(){
-    //Load data into app
-    var retrievedObject = JSON.parse(localStorage.getItem('TabLog'));
-    console.log(retrievedObject);
-    retrievedObject.forEach(function(current_url){
-      console.log(current_url.url);
-      chrome.tabs.create({ url: current_url.url });
-    });
+    if(typeof(Storage) !== "undefined" && localStorage.getItem("TabLog") !== null){
+      //Load data into app
+      var retrievedObject = JSON.parse(localStorage.getItem('TabLog'));
+      // Check loaded data
+      console.log(retrievedObject);
+      // Create TAB from data
+      retrievedObject.forEach(function(current_url){
+        console.log(current_url.url);
+        chrome.tabs.create({ url: current_url.url });
+      });
+    }else{
+      if(typeof(Storage) !== "undefined"){
+        alert('Browser does not support localstorage');
+      }else{
+        alert('No tab saved');
+      }
+    }
   });
 
   var closePageButton = document.getElementById('closeTab');
   closePageButton.addEventListener('click',function(){
+    // Count all tab
     chrome.tabs.query({}, function (tabs) {
       for (var i = 0; i < tabs.length; i++) {
+        // Close all tab based on tab ID
         chrome.tabs.remove(tabs[i].id);
       }
     });
